@@ -4,14 +4,14 @@ const getBaseURL = () => {
   if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
   
   // Якщо фронтенд запущено через Vite dev/preview (наприклад, порт 4173 або 5173)
-  if (window.location.port === '4173'  window.location.port === '5173') {
+  if (window.location.port === '4173' || window.location.port === '5173') {
     return 'http://localhost:8000/api';
   }
   
   // Якщо запущено разом на Apache/OpenServer
   const path = window.location.pathname;
-  const folder = path.substring(0, path.indexOf('/frontend'))  '/LAB7';
-  return ${window.location.origin}${folder}/api;
+  const folder = path.substring(0, path.indexOf('/frontend')) || '/LAB7';
+  return `${window.location.origin}${folder}/api`;
 };
 
 const api = axios.create({
@@ -26,7 +26,7 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
-      config.headers.Authorization = Bearer ${token};
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
